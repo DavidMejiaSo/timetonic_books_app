@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timetonic_books/design_tools/tool_widgets/appButtons.dart';
 import 'package:timetonic_books/design_tools/tool_widgets/app_colors.dart';
@@ -65,7 +66,10 @@ class _DescriptionScreenState extends ConsumerState<DescriptionScreen> {
                     verticalPadding: 1.5,
                     context: context,
                     texto: "Get Started",
-                    onPressed: () {})
+                    onPressed: () {
+                      GoRouter.of(context).go('/loginPage');
+                      ;
+                    })
               ],
             ),
           ),

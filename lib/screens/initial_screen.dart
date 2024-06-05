@@ -34,7 +34,6 @@ class InitialScreen extends ConsumerWidget {
               texto: "Welcome",
               onPressed: () {
                 GoRouter.of(context).go('/descriptionPage');
-                ;
               },
             )
           ],

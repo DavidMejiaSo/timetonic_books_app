@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:timetonic_books/screens/initial_description_screen.dart';
 import 'package:timetonic_books/screens/initial_screen.dart';
+import 'package:timetonic_books/screens/login_screen.dart';
 
 final goRouterProvider = StateProvider((ref) {
   //final goRouterNotifier = ref.read(goRouterNotifierProvider);
@@ -20,6 +21,11 @@ final goRouterProvider = StateProvider((ref) {
         name: 'description_page',
         path: '/descriptionPage',
         builder: (context, state) => const DescriptionScreen(),
+      ),
+      GoRoute(
+        name: 'login_page',
+        path: '/loginPage',
+        builder: (context, state) => const LoginScreen(),
       )
     ],
   );

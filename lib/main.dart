@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timetonic_books/enviroment/enviroments.dart';
 import 'package:timetonic_books/routes/router.dart';
 
-void main() {
+void main() async {
+  await Environment.initEnvironment();
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const ProviderScope(child: MyApp()));
 }
 
