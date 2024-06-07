@@ -1,13 +1,16 @@
+class Oauth {
+  final String name;
+  final String oauth;
+
+  Oauth({required this.name, required this.oauth});
+}
+
 class User {
   //Los Twwets
   final String appKey;
-  final String oauth;
-  final String sesskey;
-  final String name;
+  final Oauth oauth;
 
-  User(
-      {required this.appKey,
-      required this.oauth,
-      required this.sesskey,
-      required this.name});
+  final String sesskey;
+
+  User({required this.appKey, required this.sesskey, required this.oauth});
 }
