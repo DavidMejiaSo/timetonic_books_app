@@ -6,6 +6,7 @@ import '../../design_tools/tool_widgets/app_colors.dart';
 
 import '../../design_tools/tool_widgets/tool_widgets.dart';
 import '../design_tools/tool_widgets/necesary_images.dart';
+import '../domain/implementations/authentications_datasource_implementation.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -17,6 +18,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
+    String user;
+    String pwd;
     void showSnackbar(BuildContext context, String message) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context)
@@ -67,7 +70,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     child: Center(
                       child: TextFormField(
                         onChanged: (value) {
-                          //email = value;
+                          user = value;
                         },
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
@@ -116,7 +119,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: TextFormField(
                       onChanged: (value) {
-                        // password = value;
+                        pwd = value;
                       },
                       //    obscureText: ref.watch(obscure_text_login),
                       decoration: InputDecoration(
@@ -170,6 +173,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     context: context,
                     texto: "Login",
                     onPressed: () async {
+                      AuthenticationImpl().getSessKey("androiddeveloper",
+                          "IG3m-QSCL-zqPS-Ciha-MsGi-sDwy-dfHI");
                       //Ir a siguiente página
                     },
                     textColor: AppColors.white,
