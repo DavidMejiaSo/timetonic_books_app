@@ -4,7 +4,7 @@ import 'package:timetonic_books/infrastructure/entites/user.dart';
 
 import '../../enviroment/enviroments.dart';
 
-class AuthenticationImpl extends Authentication {
+class AuthenticationImpl implements Authentication {
   final dio = Dio(BaseOptions(baseUrl: Environment.apiUrl));
   @override
   Future<String> getAppKey() async {
