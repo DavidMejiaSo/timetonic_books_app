@@ -6,6 +6,7 @@ import 'package:timetonic_books/design_tools/tool_widgets/app_colors.dart';
 import 'package:timetonic_books/design_tools/tool_widgets/tool_widgets.dart';
 
 import '../design_tools/tool_widgets/necesary_images.dart';
+import '../infrastructure/controllers/providers/authentication_provider.dart';
 
 class InitialScreen extends ConsumerStatefulWidget {
   const InitialScreen({super.key});
@@ -66,6 +67,7 @@ class _InitialScreenState extends ConsumerState<InitialScreen> {
                     context: context,
                     texto: "Get Started",
                     onPressed: () {
+                      ref.watch(authProvider.notifier).createAppKey();
                       GoRouter.of(context).go('/loginPage');
                       ;
                     })

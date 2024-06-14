@@ -24,22 +24,47 @@ class AuthNotifier extends StateNotifier<AuthState> {
       {required this.authRepository, required this.keyValueStorageService})
       : super(AuthState()) {}
 
+  void createAppKey() async {
+    try {
+      final appKey = await authRepository.getAppKey();
+
+      final updatedUser = User(
+        appKey: appKey,
+        oauth: state.user?.oauth ?? Oauth(name: '', oauth: ''),
+        sesskey: state.user?.sesskey ?? '',
+      );
+
+      _settLoggedUser(updatedUser);
+    } on CustomError catch (e) {
+      logout(errorMessage: "Error: No se creó al appkey");
+      print(e.message);
+    }
+  }
+
   Future<void> loginUser(String name, String password, String appKey) async {
     try {
-      final user = await authRepository.getOauth(appKey, name, password);
-      _settLoggedUser(user);
+      final Oauth = await authRepository.getOauth(appKey, name, password);
+      final updatedUser = User(
+        appKey: state.user?.appKey ?? '',
+        oauth: Oauth,
+        sesskey: state.user?.sesskey ?? '',
+      );
+
+      _settLoggedUser(updatedUser);
     } on CustomError catch (e) {
       logout(errorMessage: e.message);
+      print(e.message);
     } catch (e) {
       logout(errorMessage: 'Error desconocido ${e.toString()}');
+      print(e);
     }
   }
 
   logout({String? errorMessage}) async {
-    await keyValueStorageService.removeKey('token');
-    //todo: lIMPIAR TOKEN
+    await keyValueStorageService.removeKey('sessKey');
+    //todo: lIMPIAR sessKey
     state = state.copyWith(
-        token: null,
+        sessKey: null,
         user: null,
         userId: null,
         authStatus: AuthStatus.notAuthenticated,
@@ -47,14 +72,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   // void checkStatus() async {
-  //   final token = await keyValueStorageService.getValue<String>('token');
+  //   final sessKey = await keyValueStorageService.getValue<String>('sessKey');
 //
-  //   if (token != null) {
+  //   if (sessKey != null) {
   //     try {
-  //       final user = await authRepository.checkAuthStatus(token);
+  //       final user = await authRepository.checkAuthStatus(sessKey);
   //       _settLoggedUser(user);
   //       print("vv");
-  //       print(user.token);
+  //       print(user.sessKey);
   //     } on CustomError catch (e) {
   //       logout(errorMessage: e.message);
   //     } catch (e) {
@@ -63,14 +88,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
   //   }
   // }
 
-  void _settLoggedUser(Oauth user) async {
-    await keyValueStorageService.setKeyValue('token', user.name);
+  void _settLoggedUser(User user) async {
+    //await keyValueStorageService.setKeyValue('sessKey', user.sesskey);
 
-    // await keyValueStorageService.setKeyValue('token', user.token);
-    //TODO: Necesito guardar el token en storage
-    state = state.copyWith(
-        authStatus: AuthStatus.authenticated,
-        errorMessage: 'Bienvenido ${user.name}');
+    // await keyValueStorageService.setKeyValue('sessKey', user.sessKey);
+    //TODO: Necesito guardar el sessKey en storage
+    state = state.copyWith(authStatus: AuthStatus.authenticated, user: user);
   }
 }
 
@@ -79,28 +102,26 @@ enum AuthStatus { checking, authenticated, notAuthenticated }
 class AuthState {
   final AuthStatus authStatus;
   final User? user;
-  final String? token;
-  final String? userId;
+  final String? sessKey;
+
   final String errorMessage;
 
   AuthState(
       {this.authStatus = AuthStatus.checking,
       this.user,
-      this.token,
-      this.userId,
+      this.sessKey,
       this.errorMessage = ''});
 
   AuthState copyWith({
     AuthStatus? authStatus,
     User? user,
-    String? token,
+    String? sessKey,
     String? userId,
     String? errorMessage,
   }) =>
       AuthState(
           authStatus: authStatus ?? this.authStatus,
           user: user ?? this.user,
-          userId: userId ?? this.userId,
           errorMessage: errorMessage ?? this.errorMessage,
-          token: token ?? this.token);
+          sessKey: sessKey ?? this.sessKey);
 }

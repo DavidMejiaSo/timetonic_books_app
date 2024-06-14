@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:timetonic_books/infrastructure/controllers/providers/authentication_provider.dart';
 
 import '../../design_tools/tool_widgets/appButtons.dart';
 import '../../design_tools/tool_widgets/app_colors.dart';
 
 import '../../design_tools/tool_widgets/tool_widgets.dart';
 import '../design_tools/tool_widgets/necesary_images.dart';
-import '../domain/implementations/authentications_datasource_implementation.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -17,9 +17,18 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    String user;
-    String pwd;
+    final authentication = ref.watch(authProvider);
+    final auth_notifier = ref.watch(authProvider.notifier);
+    bool visible = false;
+    String user = "";
+    String pwd = "";
     void showSnackbar(BuildContext context, String message) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context)
@@ -65,21 +74,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                   Container(
                     //Container de el Usuario
-                    color: AppColors.red.withOpacity(0.5),
+                    color: AppColors.paleWhite.withOpacity(0.4),
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: Center(
                       child: TextFormField(
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors
+                              .black, // Cambia el color del texto ingresado aquí
+                          fontSize: 15, // Opcional: cambia el tamaño del texto
+                        ),
+                        cursorColor: Colors.black,
                         onChanged: (value) {
                           user = value;
                         },
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
-                            borderSide: const BorderSide(color: AppColors.grey),
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
-                            borderSide: const BorderSide(color: AppColors.grey),
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -98,7 +116,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                           labelText: "E-mail",
                           labelStyle: const TextStyle(
-                            color: AppColors.white,
+                            color: AppColors.black,
                           ),
 
                           // Nuevo campo para mostrar el mensaje de error
@@ -115,9 +133,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   //Aquí va la password
                   Container(
                     //Container del TextFormField de la contraseña
-                    color: AppColors.red.withOpacity(0.5),
+                    color: AppColors.paleWhite.withOpacity(0.4),
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: TextFormField(
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors
+                            .black, // Cambia el color del texto ingresado aquí
+                        fontSize: 15, // Opcional: cambia el tamaño del texto
+                      ),
                       onChanged: (value) {
                         pwd = value;
                       },
@@ -147,7 +171,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         labelText: "Password",
                         labelStyle: const TextStyle(
-                          color: AppColors.white,
+                          color: AppColors.black,
                         ),
                         suffixIcon: GestureDetector(
                           onTap: () {},
@@ -173,8 +197,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     context: context,
                     texto: "Login",
                     onPressed: () async {
-                      AuthenticationImpl().getSessKey("androiddeveloper",
-                          "IG3m-QSCL-zqPS-Ciha-MsGi-sDwy-dfHI");
+                      //print(authentication.user!.oauth.name);
+                      //auth_notifier.loginUser(
+                      //    user, pwd, authentication.user!.appKey);
+                      // AuthenticationImpl(
+                      // pr).getSessKey("androiddeveloper",
+                      //     "IG3m-QSCL-zqPS-Ciha-MsGi-sDwy-dfHI");
                       //Ir a siguiente página
                     },
                     textColor: AppColors.white,
