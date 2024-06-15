@@ -93,7 +93,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
     // await keyValueStorageService.setKeyValue('sessKey', user.sessKey);
     //TODO: Necesito guardar el sessKey en storage
-    state = state.copyWith(authStatus: AuthStatus.authenticated, user: user);
+    state = state.copyWith(authStatus: AuthStatus.notAuthenticated, user: user);
   }
 }
 

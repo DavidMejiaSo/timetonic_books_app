@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timetonic_books/infrastructure/controllers/providers/authentication_provider.dart';
 
@@ -197,6 +198,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     context: context,
                     texto: "Login",
                     onPressed: () async {
+                      GoRouter.of(context).go('/landingPage');
+
                       //print(authentication.user!.oauth.name);
                       //auth_notifier.loginUser(
                       //    user, pwd, authentication.user!.appKey);
