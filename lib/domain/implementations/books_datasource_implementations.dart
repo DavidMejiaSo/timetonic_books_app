@@ -1,31 +1,38 @@
 import 'package:dio/dio.dart';
 import 'package:timetonic_books/domain/datasource/books.dart';
 import 'package:timetonic_books/infrastructure/entites/book.dart';
+import 'package:timetonic_books/infrastructure/mappers/book_mapper.dart';
 
 import '../../enviroment/enviroments.dart';
 
 class AllBooksImpl extends AllBooksDatasource {
   final dio = Dio(BaseOptions(baseUrl: Environment.apiUrl));
   @override
-  Future<List<Book>> getAllBooks() async {
+  Future<List<Book>> getAllBooks(String userName, String sessKey) async {
     try {
       final response = await dio.post(
         "",
         queryParameters: {
           'version': Environment.apiVersion,
-          'req': Environment.apiReqAppKey,
-          'appname': 'api',
+          'o_u': userName,
+          'sesskey': sessKey,
+          'req': Environment.apiReqGetBooks,
+          'u_c': userName,
         },
       );
 
-      final String appKey = response.data['appkey'];
-      final List<Book> lista = [];
-      return lista;
-    } catch (e) {
-      // Handle errors appropriately
+      final List<Book> books = [];
+      final dataList = response.data?['allBooks']['books'] as List<dynamic>?;
 
-      throw Exception('Failed to get app key');
+      if (dataList != null) {
+        final booksList = BooksMapper.jsonToEntityList(response.data);
+        books.addAll(booksList);
+      }
+
+      return books;
+    } catch (e) {
+      // Maneja los errores adecuadamente
+      throw Exception('Failed to get books');
     }
-    // TODO: implement getAllBooks
   }
 }

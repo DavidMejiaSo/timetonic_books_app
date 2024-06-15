@@ -8,6 +8,7 @@ import '../../design_tools/tool_widgets/app_colors.dart';
 
 import '../../design_tools/tool_widgets/tool_widgets.dart';
 import '../design_tools/tool_widgets/necesary_images.dart';
+import '../domain/implementations/books_datasource_implementations.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -198,7 +199,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     context: context,
                     texto: "Login",
                     onPressed: () async {
-                      GoRouter.of(context).go('/landingPage');
+                      AllBooksImpl().getAllBooks('androiddeveloper',
+                          'm7Ab-Sm6l-zLxg-uYGL-SfkE-7iDX-BgE1');
+                      // GoRouter.of(context).go('/landingPage');
 
                       //print(authentication.user!.oauth.name);
                       //auth_notifier.loginUser(
