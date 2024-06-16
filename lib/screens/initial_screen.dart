@@ -66,10 +66,9 @@ class _InitialScreenState extends ConsumerState<InitialScreen> {
                     verticalPadding: 1.5,
                     context: context,
                     texto: "Get Started",
-                    onPressed: () {
-                      //ref.watch(authProvider.notifier).createAppKey();
+                    onPressed: () async {
                       GoRouter.of(context).go('/loginPage');
-                      ;
+                      ref.read(authProvider.notifier).createAppKey();
                     })
               ],
             ),

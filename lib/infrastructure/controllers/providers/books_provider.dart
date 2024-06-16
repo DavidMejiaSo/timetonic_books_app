@@ -1,33 +1,33 @@
 import 'package:riverpod/riverpod.dart';
 
 import 'package:timetonic_books/domain/implementations/books_datasource_implementations.dart';
-
-import 'package:timetonic_books/services/storage/key_value_storage_service.dart';
-import 'package:timetonic_books/services/storage/key_value_storage_service_implementation.dart';
+import 'package:timetonic_books/infrastructure/controllers/providers/authentication_provider.dart';
 
 import '../../entites/book.dart';
+import '../../entites/user.dart';
 
 final booksProvider = StateNotifierProvider<BooksNotifier, List<Book>>((ref) {
   final booksRepository = AllBooksImpl();
-  final keyValueStorageService = KeyValueStorageServiceImpl();
+  final userData = ref.watch(authProvider).user!;
 
   return BooksNotifier(
     booksRepository: booksRepository,
-    keyValueStorageService: keyValueStorageService,
+    user: userData,
   );
 });
 
 class BooksNotifier extends StateNotifier<List<Book>> {
   final AllBooksImpl booksRepository;
-  final KeyValueStorageService keyValueStorageService;
+  final User user;
 
   BooksNotifier({
     required this.booksRepository,
-    required this.keyValueStorageService,
+    required this.user,
   }) : super([]);
 
-  Future<void> getAllBooks(String name, String sesskey) async {
-    final books = await booksRepository.getAllBooks(name, sesskey);
+  Future<void> getAllBooks() async {
+    final books =
+        await booksRepository.getAllBooks(user.oauth.name, user.sesskey);
     state = books;
     // Actualiza el estado con el nuevo estado del usuario.
     // No existe una propiedad `booksStatus` ni `notbooksenticated` en la lista de libros. Debes manejar este estado en otra parte de tu lógica de estado.

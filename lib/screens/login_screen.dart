@@ -26,8 +26,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authentication = ref.watch(authProvider);
-    final auth_notifier = ref.watch(authProvider.notifier);
+    //final authentication = ref.watch(authProvider);
+    //final auth_notifier = ref.watch(authProvider.notifier);
     bool visible = false;
     String user = "";
     String pwd = "";
@@ -199,9 +199,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     context: context,
                     texto: "Login",
                     onPressed: () async {
-                      AllBooksImpl().getAllBooks('androiddeveloper',
-                          'm7Ab-Sm6l-zLxg-uYGL-SfkE-7iDX-BgE1');
-                      // GoRouter.of(context).go('/landingPage');
+                      ref.read(authProvider.notifier).loginUser(user, pwd);
+                      GoRouter.of(context).go('/landingPage');
 
                       //print(authentication.user!.oauth.name);
                       //auth_notifier.loginUser(

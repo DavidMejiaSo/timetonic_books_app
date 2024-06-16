@@ -22,11 +22,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
   final KeyValueStorageService keyValueStorageService;
   AuthNotifier(
       {required this.authRepository, required this.keyValueStorageService})
-      : super(AuthState()) {}
+      : super(AuthState());
 
   void createAppKey() async {
     try {
       final appKey = await authRepository.getAppKey();
+
+      await keyValueStorageService.setKeyValue('appKey', appKey);
 
       final updatedUser = User(
         appKey: appKey,
@@ -36,27 +38,51 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       _settLoggedUser(updatedUser);
     } on CustomError catch (e) {
-      logout(errorMessage: "Error: No se creó al appkey");
-      print(e.message);
+      logout(errorMessage: "Error: No se creó al appkey ${e.message}");
     }
   }
 
-  Future<void> loginUser(String name, String password, String appKey) async {
+  void loginUser(String name, String password) async {
     try {
-      final Oauth = await authRepository.getOauth(appKey, name, password);
+      final appkey = await keyValueStorageService.getValue('appKey');
+      final Oauth = await authRepository.getOauth(name, password, appkey);
+
       final updatedUser = User(
         appKey: state.user?.appKey ?? '',
         oauth: Oauth,
         sesskey: state.user?.sesskey ?? '',
       );
+      await keyValueStorageService.setKeyValue('userName', Oauth.name);
+      await keyValueStorageService.setKeyValue('oauth', Oauth.oauth);
 
       _settLoggedUser(updatedUser);
     } on CustomError catch (e) {
       logout(errorMessage: e.message);
-      print(e.message);
     } catch (e) {
       logout(errorMessage: 'Error desconocido ${e.toString()}');
-      print(e);
+    }
+  }
+
+  void createSessKey() async {
+    try {
+      final name = await keyValueStorageService.getValue('userName');
+
+      final oauth = await keyValueStorageService.getValue('oauth');
+
+      final sesskey = await authRepository.getSessKey(name, oauth);
+
+      final updatedUser = User(
+        appKey: state.user?.appKey ?? '',
+        oauth: Oauth(name: name, oauth: oauth),
+        sesskey: sesskey,
+      );
+
+      await keyValueStorageService.setKeyValue('sesskey', sesskey);
+
+      _settLoggedUser(updatedUser);
+    } on CustomError catch (e) {
+      logout(errorMessage: "Error: No se creó al appkey");
+      print(e.message);
     }
   }
 
@@ -66,9 +92,26 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(
         sessKey: null,
         user: null,
-        userId: null,
         authStatus: AuthStatus.notAuthenticated,
         errorMessage: 'Sesión finalizada');
+  }
+
+  void checkStatus() async {
+    final appKey = await keyValueStorageService.getValue('appKey');
+
+    final name = await keyValueStorageService.getValue('userName');
+
+    final oauth = await keyValueStorageService.getValue('userName');
+
+    final sesskey = await keyValueStorageService.getValue('sessKey');
+
+    final updatedUser = User(
+      appKey: appKey,
+      oauth: Oauth(name: name, oauth: oauth),
+      sesskey: sesskey,
+    );
+
+    _settLoggedUser(updatedUser);
   }
 
   // void checkStatus() async {
@@ -93,7 +136,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
     // await keyValueStorageService.setKeyValue('sessKey', user.sessKey);
     //TODO: Necesito guardar el sessKey en storage
-    state = state.copyWith(authStatus: AuthStatus.notAuthenticated, user: user);
+    state = state.copyWith(user: user);
   }
 }
 
