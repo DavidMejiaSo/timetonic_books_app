@@ -1,7 +1,6 @@
 import 'package:riverpod/riverpod.dart';
 import 'package:timetonic_books/domain/implementations/authentications_datasource_implementation.dart';
 
-import '../../../domain/datasource/authentication.dart';
 import '../../../services/errors/error.dart';
 import '../../../services/storage/key_value_storage_service.dart';
 import '../../../services/storage/key_value_storage_service_implementation.dart';
@@ -26,12 +25,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   void createAppKey() async {
     try {
-      final appKey = await authRepository.getAppKey();
+      final appK = await authRepository.getAppKey();
 
-      await keyValueStorageService.setKeyValue('appKey', appKey);
+      await keyValueStorageService.setKeyValue('appk', appK.toString());
 
       final updatedUser = User(
-        appKey: appKey,
+        appKey: appK,
         oauth: state.user?.oauth ?? Oauth(name: '', oauth: ''),
         sesskey: state.user?.sesskey ?? '',
       );
@@ -42,18 +41,26 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  Future appKey() async {
+    final app_k = await keyValueStorageService.getValue<String>('appkey');
+
+    return app_k.toString();
+  }
+
   void loginUser(String name, String password) async {
     try {
-      final appkey = await keyValueStorageService.getValue('appKey');
-      final Oauth = await authRepository.getOauth(name, password, appkey);
+      final appkey = await appKey();
+      print(appkey.toString());
+      final oauth =
+          await authRepository.getOauth(name, password, appkey.toString());
 
       final updatedUser = User(
         appKey: state.user?.appKey ?? '',
-        oauth: Oauth,
+        oauth: oauth,
         sesskey: state.user?.sesskey ?? '',
       );
-      await keyValueStorageService.setKeyValue('userName', Oauth.name);
-      await keyValueStorageService.setKeyValue('oauth', Oauth.oauth);
+      await keyValueStorageService.setKeyValue('userName', oauth.name);
+      await keyValueStorageService.setKeyValue('oauth', oauth.oauth);
 
       _settLoggedUser(updatedUser);
     } on CustomError catch (e) {
