@@ -42,7 +42,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future appKey() async {
-    final app_k = await keyValueStorageService.getValue<String>('appkey');
+    final app_k = await keyValueStorageService.getValue<String>('appk');
 
     return app_k.toString();
   }
@@ -52,7 +52,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final appkey = await appKey();
       print(appkey.toString());
       final oauth =
-          await authRepository.getOauth(name, password, appkey.toString());
+          await authRepository.getOauth(appkey.toString(), name, password);
 
       final updatedUser = User(
         appKey: state.user?.appKey ?? '',

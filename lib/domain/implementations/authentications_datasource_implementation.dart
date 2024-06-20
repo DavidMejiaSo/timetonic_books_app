@@ -42,6 +42,7 @@ class AuthenticationImpl implements Authentication {
           'appkey': appKey,
         },
       );
+
       String oauth = response.data['oauthkey'];
       String name = response.data['o_u'];
       print("Este es el name $name y este es el nombre $oauth");

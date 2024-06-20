@@ -199,7 +199,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     context: context,
                     texto: "Login",
                     onPressed: () async {
-                      ref.read(authProvider.notifier).loginUser(user, pwd);
+                      ref.read(authProvider.notifier).loginUser(
+                          "android.developer@timetonic.com",
+                          "Android.developer1");
                       //GoRouter.of(context).go('/landingPage');
 
                       //print(authentication.user!.oauth.name);
